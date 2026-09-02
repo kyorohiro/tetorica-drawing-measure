@@ -1,9 +1,10 @@
 import { forwardRef, RefObject, useImperativeHandle } from "react"
-import { isTauri } from "../../natives/native";
+import { getTaurPlatformInfo, isTauri } from "../../natives/native";
 import { useDialog } from "../utils/useDialog";
 import { AppBackgroundImageCanvasHandle, useBackgroundImageState } from "./AppBackgroundImageCanvas";
 import { getVideo } from "../../natives/nativeWebScreenshot";
 import { captureAndCrop } from "../../natives/nativeScreenshot";
+import { hasPermission, openPrivacySettings, requestScreenCapturePermission } from "../../natives/nativePermissionCheck";
 
 export type AppImportImageHandle = {
     handleImportImage: () => Promise<void>;
@@ -59,6 +60,23 @@ export const AppImportImage = forwardRef<AppImportImageHandle,  AppImportImagePr
 
     const handleScreenshotImage = async () => {
         if (!isTauri()) return;
+        if (await getTaurPlatformInfo() === "macos" && !(await hasPermission())) {
+            const allowCapture = await dialog.showConfirmDialog({
+                title: "Allow Screen Recording",
+                body:
+                    "To capture a screenshot from other apps, Tetorica Drawing Measure needs macOS Screen Recording permission.\n\n" +
+                    "It captures only the area behind this window and never uploads your screen.",
+                cancelText: "Not now",
+                okText: "Allow Screen Recording",
+            });
+            if (!allowCapture) return;
+
+            await requestScreenCapturePermission();
+            if (!(await hasPermission())) {
+                await openPrivacySettings();
+                return;
+            }
+        }
         const capture = await captureAndCrop({ hideWindow: true });
         const image = new Blob([capture.pngBuffer], { type: "image/png" });
         await props.appBackgroundImageCanvasRef?.current?.addImage(image);
