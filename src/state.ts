@@ -10,6 +10,7 @@ function isCaptureMode(value: any): value is CaptureMode {
 }
 
 type Settings = {
+    gridVisible: boolean
     grid: number
     opacity: number
     lineWidth: number
@@ -31,7 +32,7 @@ type Settings = {
 
 }
 
-export type ToolMode = "measure" | "draw" | "color" | "capture" | "deskel" | "image"
+export type ToolMode = "measure" | "grid" | "draw" | "color" | "capture" | "deskel" | "image"
 type Target = "screen" | "image"
 type AppState = Settings & {
     clickThrough: boolean
@@ -43,6 +44,7 @@ type AppState = Settings & {
 type Listener = () => void
 
 const DEFAULT_SETTINGS: Settings = {
+    gridVisible: true,
     grid: 80,
     opacity: 0.7,
     lineWidth: 1,
@@ -53,7 +55,7 @@ const DEFAULT_SETTINGS: Settings = {
     captureMode: "lightness"
 }
 
-const SETTINGS_KEY = "tetorica-deskel-settings"
+const SETTINGS_KEY = "tetorica-drawing-measure-settings"
 
 function loadSettings(): Settings {
     console.log("> loadSettings")
@@ -67,6 +69,7 @@ function loadSettings(): Settings {
         console.log(">> ", parsed)
 
         return {
+            gridVisible: typeof parsed.gridVisible === "boolean" ? parsed.gridVisible : DEFAULT_SETTINGS.gridVisible,
             grid: typeof parsed.grid === "number" ? parsed.grid : DEFAULT_SETTINGS.grid,
             opacity: typeof parsed.opacity === "number" ? parsed.opacity : DEFAULT_SETTINGS.opacity,
             lineWidth:
@@ -136,6 +139,7 @@ class AppStateStore {
         console.log("saved ", saved)
 
         this._state = {
+            gridVisible: saved.gridVisible,
             grid: saved.grid,
             opacity: saved.opacity,
             lineWidth: saved.lineWidth,
@@ -180,6 +184,7 @@ class AppStateStore {
         }
 
         const settingsChanged =
+            prev.gridVisible !== this._state.gridVisible ||
             prev.grid !== this._state.grid ||
             prev.opacity !== this._state.opacity ||
             prev.lineWidth !== this._state.lineWidth ||
@@ -189,6 +194,7 @@ class AppStateStore {
 
         if (settingsChanged) {
             saveSettings({
+                gridVisible: this._state.gridVisible,
                 grid: this._state.grid,
                 opacity: this._state.opacity,
                 lineWidth: this._state.lineWidth,
@@ -231,6 +237,9 @@ class AppStateStore {
     }
     public setTarget(value: Target): void {
         this.setState({ target: value })
+    }
+    public setGridVisible(value: boolean): void {
+        this.setState({ gridVisible: value })
     }
 
     public setTool(value: ToolMode): void {

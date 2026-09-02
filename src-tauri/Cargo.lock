@@ -5377,7 +5377,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "tetorica-deskel"
+name = "tetorica-drawing-measure"
 version = "0.15.2"
 dependencies = [
  "chrono",

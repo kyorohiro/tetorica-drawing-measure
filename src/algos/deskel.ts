@@ -78,7 +78,9 @@ function draw(params: { canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D
   params.ctx.rotate(rad)
   params.ctx.translate(-cx, -cy)
 
-  drawGrid({ canvas: params.canvas, ctx: params.ctx, w, h });
+  if (appState.getState().gridVisible) {
+    drawGrid({ canvas: params.canvas, ctx: params.ctx, w, h });
+  }
   //drawCross({ canvas: params.canvas, ctx: params.ctx, w, h });
   params.ctx.restore()
 }
