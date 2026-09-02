@@ -1,21 +1,21 @@
 {
-  "id": "/tetorica-drawing-measure/",
+  "id": "/tetorica-drawing-measure/demo/",
   "name": "Tetorica Drawing Measure",
   "short_name": "Drawing Measure",
   "description": "A lightweight drawing grid and measurement overlay",
-  "start_url": "/tetorica-drawing-measure/",
-  "scope": "/tetorica-drawing-measure/",
+  "start_url": "/tetorica-drawing-measure/demo/",
+  "scope": "/tetorica-drawing-measure/demo/",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
   "icons": [
     {
-      "src": "/tetorica-drawing-measure/icon-192x192.png",
+      "src": "/tetorica-drawing-measure/demo/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/tetorica-drawing-measure/icon-512x512.png",
+      "src": "/tetorica-drawing-measure/demo/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

@@ -38,7 +38,7 @@ export const AppImportImage = forwardRef<AppImportImageHandle,  AppImportImagePr
     };
 
     const openPwa = () => {
-        const pwaUrl = "https://kyorohiro.github.io/tetorica-drawing-measure/";
+        const pwaUrl = "https://kyorohiro.github.io/tetorica-drawing-measure/demo/";
         const pwaWindow = window.open(pwaUrl, "_blank", "noopener");
         if (!pwaWindow) window.location.assign(pwaUrl);
     };
