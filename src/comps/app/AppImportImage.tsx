@@ -99,7 +99,7 @@ export const AppImportImage = forwardRef<AppImportImageHandle,  AppImportImagePr
     return (
         <>
             {!_backgroundImageState.hasImage && !isTauri() && (
-                <div className="fixed inset-0 z-[99998] flex items-center justify-center pointer-events-none">
+                <div className="fixed inset-0 z-40 flex items-center justify-center pointer-events-none">
                     <div className="pointer-events-auto flex flex-col items-center gap-3 rounded-2xl border border-slate-700 bg-slate-900/85 px-6 py-5 text-white shadow-2xl backdrop-blur">
                         <div className="text-center">
                             <div className="text-base font-semibold">Import Image</div>
