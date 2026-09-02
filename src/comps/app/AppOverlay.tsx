@@ -84,10 +84,25 @@ export function AppOverlay() {
       } satisfies DeskelToolContext;
     };
     const handler = measureHandlerRef.current;
-    const onDown = (event: PointerEvent) => { if (state.tool === "measure") handler.onPointerDown(context(), event); redraw(); };
+    canvas.style.touchAction = "none";
+    const onDown = (event: PointerEvent) => {
+      if (state.tool === "measure") {
+        handler.onPointerDown(context(), event);
+        canvas.setPointerCapture?.(event.pointerId);
+      }
+      redraw();
+    };
     const onMove = (event: PointerEvent) => { if (state.tool === "measure") handler.onPointerMove(context(), event); redraw(); };
-    const onUp = () => { if (state.tool === "measure") handler.onPointerUp(context()); redraw(); };
-    const onCancel = () => { handler.onPointerCancel(context()); redraw(); };
+    const onUp = (event: PointerEvent) => {
+      if (state.tool === "measure") handler.onPointerUp(context());
+      if (canvas.hasPointerCapture?.(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+      redraw();
+    };
+    const onCancel = (event: PointerEvent) => {
+      handler.onPointerCancel(context());
+      if (canvas.hasPointerCapture?.(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+      redraw();
+    };
     const onResize = () => redraw(true);
     canvas.addEventListener("pointerdown", onDown);
     canvas.addEventListener("pointermove", onMove);
