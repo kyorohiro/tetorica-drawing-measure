@@ -22,6 +22,7 @@
         "alwaysOnTop": false,
         "resizable": true,
         "visible": true,
+        "useHttpsScheme": true,
         "skipTaskbar": false
       }
     ],

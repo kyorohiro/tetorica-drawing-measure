@@ -2,12 +2,14 @@ import { forwardRef, RefObject, useImperativeHandle } from "react"
 import { isTauri } from "../../natives/native";
 import { useDialog } from "../utils/useDialog";
 import { AppBackgroundImageCanvasHandle, useBackgroundImageState } from "./AppBackgroundImageCanvas";
-import { isPwaDistributionLocation } from "../../natives/pwa";
 import { getVideo } from "../../natives/nativeWebScreenshot";
+import { captureAndCrop } from "../../natives/nativeScreenshot";
 
 export type AppImportImageHandle = {
     handleImportImage: () => Promise<void>;
     handleImportScreen: () => Promise<void>;
+    handleScreenshotImage: () => Promise<void>;
+    clearImage: () => Promise<void>;
 };
 
 type AppImportImageProps = {
@@ -34,24 +36,45 @@ export const AppImportImage = forwardRef<AppImportImageHandle,  AppImportImagePr
         }
     };
 
+    const openPwa = () => {
+        const pwaUrl = "https://kyorohiro.github.io/tetorica-drawing-measure/";
+        const pwaWindow = window.open(pwaUrl, "_blank", "noopener");
+        if (!pwaWindow) window.location.assign(pwaUrl);
+    };
+
     const handleImportScreen = async () => {
-          if(!isTauri() && !isPwaDistributionLocation()) {
-            // Capture は出来ない
-            await dialog.showConfirmDialog({
-              title: "",
-              body: "Screen sharing is not supported on itch.io. Please use our PWA version instead."
-            })
+          if (window.self !== window.top) {
+            const moveToPwa = await dialog.showConfirmDialog({
+              title: "Screen Sharing Unavailable",
+              body: "Screen sharing is not supported inside the itch.io preview. Please open the PWA version instead.",
+              cancelText: "Cancel",
+              okText: "Move",
+            });
+            if (moveToPwa) openPwa();
             return;
           }
           const data = await getVideo();
-          await props.appBackgroundImageCanvasRef!.current!.addVideo(data!);
+          await props.appBackgroundImageCanvasRef?.current?.addVideo(data);
+    };
+
+    const handleScreenshotImage = async () => {
+        if (!isTauri()) return;
+        const capture = await captureAndCrop({ hideWindow: true });
+        const image = new Blob([capture.pngBuffer], { type: "image/png" });
+        await props.appBackgroundImageCanvasRef?.current?.addImage(image);
+    };
+
+    const clearImage = async () => {
+        await props.appBackgroundImageCanvasRef?.current?.clear();
     };
 
     useImperativeHandle(
         ref,
         () => ({
             handleImportImage,
-            handleImportScreen
+            handleImportScreen,
+            handleScreenshotImage,
+            clearImage,
         }),
         []
     );

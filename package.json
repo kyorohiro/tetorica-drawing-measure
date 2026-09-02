@@ -7,7 +7,7 @@
     "dev": "vite",
     "build-sw": "node scripts/build-sw.mjs",
     "build": "npm run build-sw && tsc && vite build",
-    "build:gh": "npm run build-sw && tsc && vite build --base=/tetorica-deskel/demo/",
+    "build:gh": "npm run build-sw && tsc && vite build --base=/tetorica-drawing-measure/",
     "build:itch": "npm run build-sw && tsc && vite build --base=./",
     "build:web": "npm run build-sw && tsc && vite build --base=./",
     "preview": "vite preview",

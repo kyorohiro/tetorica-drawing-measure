@@ -1,6 +1,6 @@
-const PWA_URL = "https://kyorohiro.github.io/tetorica-deskel/demo/";
+const PWA_URL = "https://kyorohiro.github.io/tetorica-drawing-measure/";
 const PWA_HOST = "kyorohiro.github.io"
-const PWA_PATH = "/tetorica-deskel/"
+const PWA_PATH = "/tetorica-drawing-measure/"
 
 function isPwaDistributionLocation() {
   const host = window.location.hostname;
@@ -161,5 +161,4 @@ export {
   hardResetPwa,
   isRunningAsPwa,
 }
-
 
