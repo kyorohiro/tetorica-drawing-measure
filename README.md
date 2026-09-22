@@ -17,6 +17,8 @@
 
 `Measure` では画面をドラッグして距離を測定します。右下の測定ツールバーから、直線・連続測定・基準単位の設定を切り替えられます。
 
+デスクトップ版の `Click through` を有効にした後は、`Ctrl+Shift+J` でマウス透過を解除できます。Mac では `Command+Shift+J` でも解除できます。他のアプリを操作中でも有効です。
+
 ## Development
 
 Requirements: Node.js and Rust (Tauri v2 development environment)

@@ -1,5 +1,6 @@
 import { appState } from "../state";
-import { TOGGLE_CLICK_SHORTCUT } from "./nativeShortcut";
+import { setupShortcuts, TOGGLE_CLICK_SHORTCUT } from "./nativeShortcut";
+import { showToast } from "../comps/utils/toast";
 //import { showToolbar, hideToolbarSoon } from "./toolbar";
 import { getAppWindow } from "./native";
 
@@ -50,8 +51,17 @@ async function setClickThrough(value: boolean): Promise<string> {
   if(!win) {
     return ""; 
   }
-  appState.setClickThrough(value);
+  if (value) {
+    try {
+      await setupShortcuts();
+    } catch (error) {
+      console.error("Failed to register click-through shortcut", error);
+      showToast(`Could not register ${TOGGLE_CLICK_SHORTCUT}. Click-through stays off.`);
+      return "";
+    }
+  }
   await win.setIgnoreCursorEvents(value);
+  appState.setClickThrough(value);
   if(value) {
     await setAlwaysOnTop(value);
   }

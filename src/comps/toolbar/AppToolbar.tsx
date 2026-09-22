@@ -10,7 +10,7 @@ export function AppToolbar(props: { appImportImageRef: RefObject<AppImportImageH
   const tauriMode = isTauri();
 
   return (
-    <div className="absolute left-3 top-3 z-[99999] text-white">
+    <div hidden={state.clickThrough} className="absolute left-3 top-3 z-[99999] text-white">
       <details className="group">
         <summary className="flex cursor-pointer list-none items-center gap-2 rounded-xl border border-white/15 bg-black/65 px-3 py-2 text-xs shadow-lg backdrop-blur">
           <Menu size={15} /> Drawing Measure
@@ -53,6 +53,7 @@ export function AppToolbar(props: { appImportImageRef: RefObject<AppImportImageH
           {tauriMode && <div className="border-t border-white/10 pt-3">
             <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Overlay</p>
             <label className="mb-2 flex items-center justify-between text-xs text-slate-200"><span className="flex items-center gap-1"><MousePointerClick size={13} /> Click through</span><input type="checkbox" checked={state.clickThrough} onChange={(event) => void setClickThrough(event.target.checked)} /></label>
+            <p className="mb-2 text-[10px] text-slate-400">Back to normal: Ctrl+Shift+J (Mac: also Cmd+Shift+J)</p>
             <label className="flex items-center justify-between text-xs text-slate-200"><span className="flex items-center gap-1"><Pin size={13} /> Always on top</span><input type="checkbox" checked={state.alwaysOnTop} onChange={(event) => void setAlwaysOnTop(event.target.checked)} /></label>
           </div>}
         </div>

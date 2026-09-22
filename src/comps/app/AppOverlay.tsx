@@ -119,6 +119,6 @@ export function AppOverlay() {
 
   return <>
     <canvas ref={canvasRef} className={`absolute inset-0 ${state.tool === "measure" ? "pointer-events-auto" : "pointer-events-none"}`} />
-    <AppDeskelMeasureToolbar visible={state.tool === "measure"} open={toolbarOpen} onToggle={() => setToolbarOpen((value) => !value)} measureMode={measureMode} setMeasureMode={setMeasureMode} quadMode={quadMode} setQuadMode={setQuadMode} onApplyQuad={() => {}} />
+    <AppDeskelMeasureToolbar visible={state.tool === "measure" && !state.clickThrough} open={toolbarOpen} onToggle={() => setToolbarOpen((value) => !value)} measureMode={measureMode} setMeasureMode={setMeasureMode} quadMode={quadMode} setQuadMode={setQuadMode} onApplyQuad={() => {}} />
   </>;
 }
