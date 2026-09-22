@@ -1,4 +1,4 @@
-const APP_VERSION = "0.15.7";
+const APP_VERSION = "0.15.8";
 const CACHE_PREFIX = "tetorica-drawing-measure-";
 const CACHE_NAME = `${CACHE_PREFIX}${APP_VERSION}`;
 
