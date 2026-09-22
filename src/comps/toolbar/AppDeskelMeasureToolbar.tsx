@@ -46,7 +46,7 @@ function AppDeskelMeasureToolbar(props: {
         onClick={() => {
           props.setMeasureMode("setUnit");
         }}
-        title="set unit"
+        title="set unit (hold Shift)"
         className="justify-center px-2 py-1"
       >
         Set Unit

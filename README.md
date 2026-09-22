@@ -19,6 +19,8 @@
 
 デスクトップ版の `Click through` を有効にした後は、`Ctrl+Shift+J` でマウス透過を解除できます。Mac では `Command+Shift+J` でも解除できます。他のアプリを操作中でも有効です。
 
+測定中に `Shift` を押している間は、一時的に `Set Unit` が有効になります。ドラッグ前・途中のどちらからでも使えます。Shift を押したままマウスを離すと基準の長さが更新され、Shift を離すと元の測定モードに戻ります。
+
 ## Development
 
 Requirements: Node.js and Rust (Tauri v2 development environment)

@@ -14,6 +14,9 @@ export function AppOverlay() {
   const draggingRef = useRef(false);
   const [, setDragging] = useState(false);
   const [measureMode, setMeasureMode] = useState<MeasureMode>("line");
+  const shiftHeldRef = useRef(false);
+  const [shiftHeld, setShiftHeld] = useState(false);
+  const effectiveMeasureMode = shiftHeld ? "setUnit" : measureMode;
   const [quadMode, setQuadMode] = useState<QuadMode>("off");
   const [toolbarOpen, setToolbarOpen] = useState(true);
   const state = useAppState();
@@ -39,7 +42,7 @@ export function AppOverlay() {
         target: "screen",
         color: state.color,
         measureUnit: state.measureUnit,
-        measureMode,
+        measureMode: shiftHeldRef.current ? "setUnit" : measureMode,
         quadMode,
       },
       startRef,
@@ -70,7 +73,7 @@ export function AppOverlay() {
       return {
         canvas,
         ctx,
-        state: { tool: state.tool, target: "screen" as const, color: state.color, measureUnit: state.measureUnit, measureMode, quadMode },
+        state: { tool: state.tool, target: "screen" as const, color: state.color, measureUnit: state.measureUnit, measureMode: shiftHeldRef.current ? "setUnit" : measureMode, quadMode },
         startRef,
         currentRef,
         draggingRef,
@@ -85,15 +88,30 @@ export function AppOverlay() {
     };
     const handler = measureHandlerRef.current;
     canvas.style.touchAction = "none";
+    const updateShift = (held: boolean) => {
+      shiftHeldRef.current = held && state.tool === "measure" && !state.clickThrough;
+      setShiftHeld(shiftHeldRef.current);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      updateShift(event.shiftKey);
+      redraw();
+    };
+    const onBlur = () => {
+      updateShift(false);
+      redraw();
+    };
+    if (state.tool !== "measure" || state.clickThrough) updateShift(false);
     const onDown = (event: PointerEvent) => {
+      updateShift(event.shiftKey);
       if (state.tool === "measure") {
         handler.onPointerDown(context(), event);
         canvas.setPointerCapture?.(event.pointerId);
       }
       redraw();
     };
-    const onMove = (event: PointerEvent) => { if (state.tool === "measure") handler.onPointerMove(context(), event); redraw(); };
+    const onMove = (event: PointerEvent) => { updateShift(event.shiftKey); if (state.tool === "measure") handler.onPointerMove(context(), event); redraw(); };
     const onUp = (event: PointerEvent) => {
+      updateShift(event.shiftKey);
       if (state.tool === "measure") handler.onPointerUp(context());
       if (canvas.hasPointerCapture?.(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
       redraw();
@@ -109,16 +127,22 @@ export function AppOverlay() {
     canvas.addEventListener("pointerup", onUp);
     canvas.addEventListener("pointercancel", onCancel);
     window.addEventListener("resize", onResize);
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("keyup", onKey);
+    window.addEventListener("blur", onBlur);
     redraw(true);
     return () => {
       canvas.removeEventListener("pointerdown", onDown); canvas.removeEventListener("pointermove", onMove);
       canvas.removeEventListener("pointerup", onUp); canvas.removeEventListener("pointercancel", onCancel);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("keyup", onKey);
+      window.removeEventListener("blur", onBlur);
     };
   }, [getPoint, measureMode, quadMode, redraw, state]);
 
   return <>
     <canvas ref={canvasRef} className={`absolute inset-0 ${state.tool === "measure" ? "pointer-events-auto" : "pointer-events-none"}`} />
-    <AppDeskelMeasureToolbar visible={state.tool === "measure" && !state.clickThrough} open={toolbarOpen} onToggle={() => setToolbarOpen((value) => !value)} measureMode={measureMode} setMeasureMode={setMeasureMode} quadMode={quadMode} setQuadMode={setQuadMode} onApplyQuad={() => {}} />
+    <AppDeskelMeasureToolbar visible={state.tool === "measure" && !state.clickThrough} open={toolbarOpen} onToggle={() => setToolbarOpen((value) => !value)} measureMode={effectiveMeasureMode} setMeasureMode={setMeasureMode} quadMode={quadMode} setQuadMode={setQuadMode} onApplyQuad={() => {}} />
   </>;
 }
